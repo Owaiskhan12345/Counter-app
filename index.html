@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Smart Tasbih Pro - Futuristic Islamic Counter with AI Voice">
+    <meta name="theme-color" content="#0a0e27">
+    <title>Smart Tasbih Pro - Islamic Counter</title>
+    <style>
+        /* ==================== GLOBAL STYLES ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #0a0e27;
+            --secondary-dark: #1a1f3a;
+            --tertiary-dark: #252d47;
+            --accent-emerald: #00ff88;
+            --accent-cyan: #00d4ff;
+            --accent-purple: #d946ef;
+            --accent-gold: #ffd700;
+            --accent-teal: #14b8a6;
+            --accent-orange: #ff6b35;
+            --accent-pink: #ff006e;
+            --glow-intensity: 0.8;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0d1b3d 100%);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ==================== ANIMATED BACKGROUND ==================== */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: float-orb 20s infinite ease-in-out;
+        }
+
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #00ff88, transparent);
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #00d4ff, transparent);
+            bottom: -150px;
+            right: -150px;
+            animation-delay: -7s;
+        }
+
+        .orb-3 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, #d946ef, transparent);
+            top: 50%;
+            right: 10%;
+            animation-delay: -14s;
+        }
+
+        @keyframes float-orb {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(30px, -50px); }
+            50% { transform: translate(-20px, 30px); }
+            75% { transform: translate(50px, 20px); }
+        }
+
+        .geometric-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(0, 255, 136, 0.03) 35px, rgba(0, 255, 136, 0.03) 70px),
+                repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(0, 212, 255, 0.03) 35px, rgba(0, 212, 255, 0.03) 70px);
+            animation: slide-geometric 20s linear infinite;
+        }
+
+        @keyframes slide-geometric {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(70px, 70px); }
+        }
+
+        /* ==================== MAIN CONTAINER ==================== */
+        .main-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            padding: 20px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        /* ==================== HEADER ==================== */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            animation: fade-in-down 1s ease-out;
+        }
+
+        .app-title {
+            font-size: 2.5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00ff88, #00d4ff, #d946ef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .app-subtitle {
+            font-size: 0.95em;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* ==================== ZIKR SELECTION BUTTONS ==================== */
+        .zikr-section {
+            width: 100%;
+            animation: fade-in-up 1s ease-out 0.2s both;
+        }
+
+        .zikr-label {
+            display: block;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .zikr-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .zikr-btn {
+            padding: 15px 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .zikr-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1));
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .zikr-btn:hover {
+            border-color: rgba(0, 255, 136, 0.4);
+            background: rgba(0, 255, 136, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .zikr-btn:hover::before {
+            transform: translateX(100%);
+        }
+
+        .zikr-btn.active {
+            border-color: var(--accent-emerald);
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--accent-emerald);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5), inset 0 0 20px rgba(0, 255, 136, 0.1);
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.5), inset 0 0 20px rgba(0, 255, 136, 0.1); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.8), inset 0 0 30px rgba(0, 255, 136, 0.2); }
+        }
+
+        /* ==================== 3D TASBIH DEVICE ==================== */
+        .device-container {
+            perspective: 1200px;
+            animation: fade-in-up 1s ease-out 0.4s both;
+        }
+
+        .tasbih-device {
+            width: 280px;
+            height: 320px;
+            background: linear-gradient(135deg, #1a1f3a 0%, #252d47 50%, #1a1f3a 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.8),
+                inset -5px -5px 15px rgba(0, 0, 0, 0.5),
+                inset 5px 5px 15px rgba(255, 255, 255, 0.1),
+                0 0 50px rgba(0, 255, 136, 0.1);
+            animation: float-device 4s ease-in-out infinite;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes float-device {
+            0%, 100% { transform: translateY(0px) rotateX(0deg); }
+            50% { transform: translateY(-15px) rotateX(5deg); }
+        }
+
+        .device-shine {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 50%, rgba(0, 0, 0, 0.1) 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        }
+
+        .display-ring {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(0, 255, 136, 0.2), rgba(0, 0, 0, 0.8));
+            border: 3px solid rgba(0, 255, 136, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 
+                inset 0 0 30px rgba(0, 255, 136, 0.1),
+                0 0 30px rgba(0, 255, 136, 0.2);
+            animation: rotate-ring 20s linear infinite;
+        }
+
+        @keyframes rotate-ring {
+            0%, 100% { box-shadow: inset 0 0 30px rgba(0, 255, 136, 0.1), 0 0 30px rgba(0, 255, 136, 0.2); }
+            50% { box-shadow: inset 0 0 30px rgba(0, 255, 136, 0.3), 0 0 40px rgba(0, 255, 136, 0.4); }
+        }
+
+        .progress-ring {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.6s ease;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 5px rgba(0, 255, 136, 0.5));
+        }
+
+        .display-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .lcd-display {
+            font-size: 3.5em;
+            font-weight: 900;
+            color: var(--accent-emerald);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 5px;
+            text-shadow: 
+                0 0 10px rgba(0, 255, 136, 0.8),
+                0 0 20px rgba(0, 255, 136, 0.4);
+            animation: glow-pulse 2s ease-in-out infinite;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { text-shadow: 0 0 10px rgba(0, 255, 136, 0.8), 0 0 20px rgba(0, 255, 136, 0.4); }
+            50% { text-shadow: 0 0 20px rgba(0, 255, 136, 1), 0 0 30px rgba(0, 255, 136, 0.6); }
+        }
+
+        .lcd-label {
+            font-size: 0.65em;
+            color: rgba(0, 255, 136, 0.6);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* ==================== COUNT BUTTON ==================== */
+        .button-container {
+            position: absolute;
+            bottom: 30px;
+            width: 80px;
+            height: 80px;
+            perspective: 1000px;
+        }
+
+        .count-button {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #00ff88, #00cc6a);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 10px 40px rgba(0, 255, 136, 0.6),
+                inset -2px -2px 8px rgba(0, 0, 0, 0.3),
+                inset 2px 2px 8px rgba(255, 255, 255, 0.2);
+            transition: all 0.1s ease;
+            font-size: 1.2em;
+            font-weight: 900;
+            color: #0a0e27;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .count-button:hover {
+            box-shadow: 
+                0 15px 50px rgba(0, 255, 136, 0.8),
+                inset -2px -2px 8px rgba(0, 0, 0, 0.3),
+                inset 2px 2px 8px rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .count-button:active {
+            transform: scale(0.95) translateY(8px);
+            box-shadow: 
+                0 5px 20px rgba(0, 255, 136, 0.4),
+                inset -2px -2px 8px rgba(0, 0, 0, 0.5),
+                inset 2px 2px 8px rgba(255, 255, 255, 0.1);
+        }
+
+        .button-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.5), transparent);
+            transform: scale(0);
+            animation: ripple-effect 0.8s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-effect {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        .particle {
+            position: fixed;
+            pointer-events: none;
+        }
+
+        .particle-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: particle-float 1.5s ease-out forwards;
+        }
+
+        @keyframes particle-float {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0);
+            }
+        }
+
+        /* ==================== CONTROLS SECTION ==================== */
+        .controls-section {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            justify-content: center;
+            animation: fade-in-up 1s ease-out 0.6s both;
+        }
+
+        .control-btn {
+            padding: 12px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-btn:hover {
+            border-color: rgba(0, 255, 136, 0.5);
+            background: rgba(0, 255, 136, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        .control-btn.active {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: var(--accent-emerald);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        /* ==================== MILESTONE POPUP ==================== */
+        .milestone-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle at 30% 30%, rgba(0, 255, 136, 0.2), rgba(212, 70, 239, 0.2));
+            border: 2px solid rgba(0, 255, 136, 0.5);
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+            pointer-events: none;
+            animation: milestone-appear 0.5s ease-out;
+            box-shadow: 
+                0 0 50px rgba(0, 255, 136, 0.5),
+                0 0 100px rgba(212, 70, 239, 0.3);
+        }
+
+        @keyframes milestone-appear {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes milestone-disappear {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .milestone-popup.hide {
+            animation: milestone-disappear 0.5s ease-in forwards;
+        }
+
+        .milestone-text {
+            font-size: 2em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00ff88, #00d4ff, #d946ef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+            animation: text-pulse 0.6s ease-in-out;
+        }
+
+        @keyframes text-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* ==================== CONFETTI ANIMATION ==================== */
+        .confetti {
+            position: fixed;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            animation: confetti-fall 3s ease-in forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotateZ(0deg) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(500px) rotateZ(720deg) scale(0);
+            }
+        }
+
+        /* ==================== FOOTER ==================== */
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85em;
+            z-index: 5;
+            animation: fade-in 2s ease-out;
+        }
+
+        .footer-text {
+            margin: 3px 0;
+            letter-spacing: 0.5px;
+        }
+
+        .developer-info {
+            font-size: 0.75em;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 5px;
+        }
+
+        /* ==================== RESPONSIVE DESIGN ==================== */
+        @media (max-width: 600px) {
+            .main-container {
+                gap: 30px;
+                padding: 15px;
+            }
+
+            .app-title {
+                font-size: 2em;
+            }
+
+            .tasbih-device {
+                width: 240px;
+                height: 280px;
+            }
+
+            .display-ring {
+                width: 180px;
+                height: 180px;
+            }
+
+            .progress-ring {
+                width: 180px;
+                height: 180px;
+            }
+
+            .lcd-display {
+                font-size: 2.8em;
+            }
+
+            .zikr-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .controls-section {
+                flex-wrap: wrap;
+            }
+
+            .control-btn {
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .footer {
+                bottom: 10px;
+                font-size: 0.75em;
+            }
+        }
+
+        /* ==================== ANIMATIONS ==================== */
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fade-in-down {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+            20%, 40%, 60%, 80% { transform: translateX(3px); }
+        }
+
+        /* ==================== DEVICE-SPECIFIC ==================== */
+        .device-shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        /* ==================== ACCESSIBILITY ==================== */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* ==================== DARK MODE (FORCED) ==================== */
+        @media (prefers-color-scheme: light) {
+            html, body {
+                background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0d1b3d 100%);
+                color: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- BACKGROUND CONTAINER -->
+    <div class="background-container">
+        <div class="floating-orb orb-1"></div>
+        <div class="floating-orb orb-2"></div>
+        <div class="floating-orb orb-3"></div>
+        <div class="geometric-overlay"></div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1 class="app-title">SMART TASBIH PRO</h1>
+            <p class="app-subtitle">AI ISLAMIC COUNTER</p>
+        </div>
+
+        <!-- ZIKR SELECTION -->
+        <div class="zikr-section">
+            <label class="zikr-label">Select Your Zikr</label>
+            <div class="zikr-buttons">
+                <button class="zikr-btn active" data-zikr="Alhamdulillah" data-text="الحمد لله">
+                    Alhamdulillah
+                </button>
+                <button class="zikr-btn" data-zikr="Subhan Allah" data-text="سبحان الله">
+                    Subhan Allah
+                </button>
+                <button class="zikr-btn" data-zikr="Astaghfirullah" data-text="استغفر الله">
+                    Astaghfirullah
+                </button>
+            </div>
+        </div>
+
+        <!-- 3D TASBIH DEVICE -->
+        <div class="device-container">
+            <div class="tasbih-device" id="tasbihDevice">
+                <div class="device-shine"></div>
+                <div class="display-ring">
+                    <svg class="progress-ring" id="progressRing">
+                        <circle class="progress-ring-circle" stroke="url(#glowGradient)" stroke-width="4" fill="transparent" r="106" cx="110" cy="110"></circle>
+                    </svg>
+                    <svg style="display: none;" width="0" height="0">
+                        <defs>
+                            <linearGradient id="glowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#00ff88;stop-opacity:1" />
+                                <stop offset="50%" style="stop-color:#00d4ff;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#d946ef;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <div class="display-content">
+                        <div class="lcd-display" id="counterDisplay">0</div>
+                        <div class="lcd-label" id="zikrLabel">Alhamdulillah</div>
+                    </div>
+                </div>
+                <button class="count-button" id="countButton" title="Click to increment counter">+</button>
+            </div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="controls-section">
+            <button class="control-btn" id="resetBtn" title="Reset counter to zero">
+                ↺ Reset
+            </button>
+            <button class="control-btn active" id="muteBtn" title="Toggle sound">
+                🔊 Sound
+            </button>
+            <button class="control-btn" id="themeBtn" title="Toggle theme glow">
+                ✨ Theme
+            </button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <div class="footer-text">Made with ❤️ for Daily Zikr</div>
+        <div class="developer-info">
+            Developer: Owais Khan | WhatsApp: +92 346 2358655<br>
+            Email: Owaiskhanmmd1@gmail.com
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // ==================== STATE MANAGEMENT ====================
+        const state = {
+            counter: 0,
+            selectedZikr: 'Alhamdulillah',
+            isMuted: false,
+            themeColorIndex: 0,
+            isAnimating: false,
+            colors: [
+                { name: 'Emerald', glow: '#00ff88', rgb: 'rgb(0, 255, 136)' },
+                { name: 'Cyan', glow: '#00d4ff', rgb: 'rgb(0, 212, 255)' },
+                { name: 'Purple', glow: '#d946ef', rgb: 'rgb(217, 70, 239)' },
+                { name: 'Gold', glow: '#ffd700', rgb: 'rgb(255, 215, 0)' },
+                { name: 'Teal', glow: '#14b8a6', rgb: 'rgb(20, 184, 166)' },
+                { name: 'Orange', glow: '#ff6b35', rgb: 'rgb(255, 107, 53)' },
+                { name: 'Pink', glow: '#ff006e', rgb: 'rgb(255, 0, 110)' }
+            ]
+        };
+
+        // ==================== DOM ELEMENTS ====================
+        const counterDisplay = document.getElementById('counterDisplay');
+        const zikrLabel = document.getElementById('zikrLabel');
+        const countButton = document.getElementById('countButton');
+        const resetBtn = document.getElementById('resetBtn');
+        const muteBtn = document.getElementById('muteBtn');
+        const themeBtn = document.getElementById('themeBtn');
+        const zikrButtons = document.querySelectorAll('.zikr-btn');
+        const tasbihDevice = document.getElementById('tasbihDevice');
+        const progressRingCircle = document.querySelector('.progress-ring-circle');
+
+        // ==================== LOCALSTORAGE MANAGEMENT ====================
+        function saveState() {
+            localStorage.setItem('tasbihState', JSON.stringify({
+                counter: state.counter,
+                selectedZikr: state.selectedZikr,
+                themeColorIndex: state.themeColorIndex
+            }));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('tasbihState');
+            if (saved) {
+                const data = JSON.parse(saved);
+                state.counter = data.counter;
+                state.selectedZikr = data.selectedZikr;
+                state.themeColorIndex = data.themeColorIndex;
+                updateDisplay();
+                selectZikrButton(state.selectedZikr);
+                applyThemeColor();
+            }
+        }
+
+        // ==================== COLOR & THEME MANAGEMENT ====================
+        function getNextColor() {
+            state.themeColorIndex = (state.themeColorIndex + 1) % state.colors.length;
+            return state.colors[state.themeColorIndex];
+        }
+
+        function applyThemeColor(color = state.colors[state.themeColorIndex]) {
+            document.documentElement.style.setProperty('--accent-emerald', color.glow);
+            const root = document.documentElement;
+            
+            // Update button gradient
+            countButton.style.background = `radial-gradient(circle at 30% 30%, ${color.glow}, ${color.glow}99)`;
+            
+            // Update glow effect
+            tasbihDevice.style.boxShadow = `
+                0 20px 60px rgba(0, 0, 0, 0.8),
+                inset -5px -5px 15px rgba(0, 0, 0, 0.5),
+                inset 5px 5px 15px rgba(255, 255, 255, 0.1),
+                0 0 50px ${color.glow}40
+            `;
+
+            // Update LCD display color
+            counterDisplay.style.color = color.glow;
+            counterDisplay.style.textShadow = `
+                0 0 10px ${color.glow}cc,
+                0 0 20px ${color.glow}66
+            `;
+
+            saveState();
+        }
+
+        function toggleThemeColor() {
+            const newColor = getNextColor();
+            applyThemeColor(newColor);
+            createParticles(countButton.getBoundingClientRect());
+        }
+
+        // ==================== DISPLAY UPDATES ====================
+        function updateDisplay() {
+            counterDisplay.style.animation = 'none';
+            setTimeout(() => {
+                counterDisplay.textContent = state.counter;
+                counterDisplay.style.animation = 'glow-pulse 2s ease-in-out infinite';
+            }, 10);
+            updateProgressRing();
+        }
+
+        function updateProgressRing() {
+            const radius = 106;
+            const circumference = 2 * Math.PI * radius;
+            const progress = (state.counter % 100) / 100;
+            const offset = circumference * (1 - progress);
+            progressRingCircle.style.strokeDasharray = circumference;
+            progressRingCircle.style.strokeDashoffset = offset;
+        }
+
+        // ==================== ZIKR SELECTION ====================
+        function selectZikrButton(zikrName) {
+            zikrButtons.forEach(btn => {
+                if (btn.dataset.zikr === zikrName) {
+                    btn.classList.add('active');
+                    state.selectedZikr = zikrName;
+                    zikrLabel.textContent = zikrName;
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            saveState();
+        }
+
+        zikrButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                selectZikrButton(btn.dataset.zikr);
+                playSound(0.5);
+            });
+        });
+
+        // ==================== VOICE SYNTHESIS ====================
+        const speechQueue = [];
+        let isSpeaking = false;
+
+        function speakText(text, callback) {
+            if (state.isMuted) {
+                if (callback) callback();
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+            utterance.lang = 'ar-SA';
+
+            // Try to select female voice
+            const voices = window.speechSynthesis.getVoices();
+            const femaleVoice = voices.find(voice => voice.name.includes('Female') || voice.name.includes('female'));
+            if (femaleVoice) {
+                utterance.voice = femaleVoice;
+            }
+
+            utterance.onend = () => {
+                isSpeaking = false;
+                if (callback) callback();
+            };
+
+            isSpeaking = true;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function queueSpeech(zikrName, number) {
+            const zikrText = getZikrText(zikrName);
+            speakText(zikrText, () => {
+                setTimeout(() => {
+                    speakText(number.toString());
+                }, 300);
+            });
+        }
+
+        function getZikrText(zikrName) {
+            const zikrMap = {
+                'Alhamdulillah': 'الحمد لله',
+                'Subhan Allah': 'سبحان الله',
+                'Astaghfirullah': 'استغفر الله'
+            };
+            return zikrMap[zikrName] || zikrName;
+        }
+
+        // ==================== SOUND EFFECTS ====================
+        function playSound(frequency = 1000) {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.frequency.value = frequency;
+                oscillator.type = 'sine';
+
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } catch (e) {
+                console.log('Audio not available');
+            }
+        }
+
+        // ==================== PARTICLE EFFECTS ====================
+        function createParticles(rect, count = 12) {
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const angle = (i / count) * Math.PI * 2;
+                const velocity = 3 + Math.random() * 3;
+                const tx = Math.cos(angle) * 100 * velocity;
+                const ty = Math.sin(angle) * 100 * velocity;
+
+                particle.style.left = centerX + 'px';
+                particle.style.top = centerY + 'px';
+                particle.style.setProperty('--tx', tx + 'px');
+                particle.style.setProperty('--ty', ty + 'px');
+
+                const dot = document.createElement('div');
+                dot.className = 'particle-dot';
+                dot.style.background = state.colors[state.themeColorIndex].glow;
+                dot.style.boxShadow = `0 0 10px ${state.colors[state.themeColorIndex].glow}`;
+                
+                particle.appendChild(dot);
+                document.body.appendChild(particle);
+
+                setTimeout(() => particle.remove(), 1500);
+            }
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.top = '-10px';
+
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.width = Math.random() * 10 + 5 + 'px';
+                piece.style.height = piece.style.width;
+                piece.style.background = state.colors[Math.floor(Math.random() * state.colors.length)].glow;
+                piece.style.left = Math.random() * 20 + 'px';
+                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                piece.style.animationDelay = Math.random() * 0.5 + 's';
+                piece.style.animationDuration = 2 + Math.random() * 1.5 + 's';
+
+                confetti.appendChild(piece);
+                document.body.appendChild(confetti);
+
+                setTimeout(() => confetti.remove(), 3500);
+            }
+        }
+
+        // ==================== COUNTER INCREMENT ====================
+        function incrementCounter() {
+            if (state.isAnimating) return;
+            state.isAnimating = true;
+
+            state.counter++;
+            updateDisplay();
+            playSound(800);
+            queueSpeech(state.selectedZikr, state.counter);
+            createParticles(countButton.getBoundingClientRect());
+            tasbihDevice.classList.add('device-shake');
+
+            // Vibration
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+
+            // Milestone checks
+            if (state.counter % 33 === 0 && state.counter > 0) {
+                showMilestonePopup('MashaAllah! 33 Completed ✨');
+                createParticles(countButton.getBoundingClientRect(), 20);
+                playSound(1200);
+            }
+
+            if (state.counter % 100 === 0 && state.counter > 0) {
+                showMilestonePopup('🎉 Allah\'s Grace! 100 Counts 🎉');
+                createConfetti();
+                playSound(1500);
+            }
+
+            saveState();
+            setTimeout(() => {
+                tasbihDevice.classList.remove('device-shake');
+                state.isAnimating = false;
+            }, 500);
+        }
+
+        // ==================== MILESTONE POPUP ====================
+        function showMilestonePopup(text) {
+            const popup = document.createElement('div');
+            popup.className = 'milestone-popup';
+            popup.innerHTML = `<div class="milestone-text">${text}</div>`;
+            document.body.appendChild(popup);
+
+            setTimeout(() => {
+                popup.classList.add('hide');
+                setTimeout(() => popup.remove(), 500);
+            }, 2000);
+        }
+
+        // ==================== BUTTON RIPPLE ====================
+        function createButtonRipple(event) {
+            const button = event.target;
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+
+            const ripple = document.createElement('div');
+            ripple.className = 'button-ripple';
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+
+            button.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 800);
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        countButton.addEventListener('click', (e) => {
+            incrementCounter();
+            createButtonRipple(e);
+        });
+
+        countButton.addEventListener('touchstart', (e) => {
+            createButtonRipple(e.touches[0]);
+        });
+
+        resetBtn.addEventListener('click', () => {
+            if (confirm('Reset counter to zero?')) {
+                state.counter = 0;
+                updateDisplay();
+                saveState();
+                playSound(600);
+                createParticles(resetBtn.getBoundingClientRect());
+            }
+        });
+
+        muteBtn.addEventListener('click', () => {
+            state.isMuted = !state.isMuted;
+            muteBtn.classList.toggle('active');
+            muteBtn.innerHTML = state.isMuted ? '🔇 Muted' : '🔊 Sound';
+            playSound(800);
+        });
+
+        themeBtn.addEventListener('click', () => {
+            toggleThemeColor();
+        });
+
+        // ==================== KEYBOARD SHORTCUTS ====================
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && e.target === document.body) {
+                e.preventDefault();
+                incrementCounter();
+            }
+            if (e.code === 'KeyR') {
+                state.counter = 0;
+                updateDisplay();
+                saveState();
+            }
+            if (e.code === 'KeyM') {
+                state.isMuted = !state.isMuted;
+                muteBtn.classList.toggle('active');
+            }
+            if (e.code === 'KeyT') {
+                toggleThemeColor();
+            }
+        });
+
+        // ==================== INITIALIZATION ====================
+        window.addEventListener('load', () => {
+            loadState();
+            applyThemeColor();
+            window.speechSynthesis.getVoices();
+        });
+
+        // Handle speech synthesis voices
+        window.speechSynthesis.onvoiceschanged = () => {
+            window.speechSynthesis.getVoices();
+        };
+
+        // Prevent sleep on mobile
+        document.addEventListener('touchmove', () => {
+            // Keep device awake
+        }, { passive: true });
+    </script>
+</body>
+</html>
